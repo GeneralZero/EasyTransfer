@@ -24,6 +24,14 @@ class Server(object):
 		self.TPORT = 9090
 		self.IPSCANNER = True
 		self.IPRANGE = "/24"
+
+		FILE = sys.argv[1]
+
+		self.control_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.control_socket.connect((HOST, TPORT))
+
+		transfer_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		transfer_socket.connect((HOST, MPORT))
 		
 	def parse_options(options_file_name):
 		COMMENT_CHAR = ';'
@@ -57,30 +65,20 @@ class Server(object):
 				self.IPSCANNER = value
 
 	def send_information(option):
-		self.control.send("Version: %s, Multi Port: %s, Control Port: %i, Transmit Port: %i" % (self.VERSION, self.MPORT, self.CPORT, self.TPORT))
+		self.control_socket.send("Version: %s, Multi Port: %s, Control Port: %i, Transmit Port: %i" % (self.VERSION, self.MPORT, self.CPORT, self.TPORT))
 		
-	def server_init(HOST = 'localhost', CPORT = 9091, TPORT = 9090):
-
-		FILE = sys.argv[1]
-
-		control = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		control.connect((HOST, TPORT))
-
-		file_transfer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		file_transfer.connect((HOST, MPORT))
-
 	def send_file(outgoing_file):
 		to_send = open(outgoing_file, "rb")
 		data = to_send.read()
 		to_send.close()
 
-		control.send("SENDING: " + FILE)
+		control_socket.send("SENDING: " + FILE)
 
-		file_transfer.send(data)
+		transfer_socket.send(data)
 
 	def server_end():
-		file_transfer.close()
-		control.close()
+		transfer_socket.close()
+		control_socket.close()
 
 if __name__ == '__main__':
 	parse_options("Clinet.ini")
