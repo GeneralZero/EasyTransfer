@@ -54,7 +54,7 @@ class StreamHandler ( Thread ):
             f.write(data)
         f.close()
 
-        print "[Transfer] Receved %s" % this.filename
+        print "[Transfer] Receved %s" % (this.filename)
         print "[Transfer] Closing Socket"
     
     def close( this ):

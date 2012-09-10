@@ -4,7 +4,7 @@ import sys, socket
 
 HOST = 'localhost'
 CPORT = 9091
-MPORT = 9090
+TPORT = 9090
 FILE = sys.argv[1]
 
 cs = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -13,7 +13,7 @@ cs.send("SEND " + FILE)
 cs.close()
 
 ms = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-ms.connect((HOST, MPORT))
+ms.connect((HOST, TPORT))
 
 f = open(FILE, "rb")
 data = f.read()
